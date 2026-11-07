@@ -1,0 +1,128 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/no010/dsh-conductor/templates/contract.schema.json",
+  "title": "dsh-conductor Task Contract",
+  "description": "任务契约：派发前必须生成并通过校验的任务说明。",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "run_id",
+    "intent",
+    "source",
+    "write_scope",
+    "dimensions",
+    "execution",
+    "evidence",
+    "negative_acceptance",
+    "failure_injection",
+    "pass_requires",
+    "failure_policy",
+    "review_categories"
+  ],
+  "properties": {
+    "version": { "type": "string", "const": "0.1" },
+    "run_id": { "type": "string", "minLength": 1 },
+    "intent": { "type": "string", "minLength": 1 },
+    "source": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "readonly"],
+        "properties": {
+          "path": { "type": "string" },
+          "readonly": { "const": true },
+          "sha256": { "type": "string" }
+        }
+      }
+    },
+    "write_scope": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
+    "dimensions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" }
+    },
+    "execution": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["parallel_analysis_count", "independent_review_count", "result_channel"],
+      "properties": {
+        "parallel_analysis_count": { "type": "integer", "minimum": 1 },
+        "independent_review_count": { "type": "integer", "minimum": 0 },
+        "dsh_headless_minimum": { "type": "integer", "minimum": 0 },
+        "result_channel": { "type": "string", "enum": ["artifacts", "ledger"] },
+        "no_fallback_after_failure": { "type": "boolean" }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "path_must_equal_source", "line_must_exist", "quote_must_match_line"],
+      "properties": {
+        "required": {
+          "type": "array",
+          "items": { "type": "string", "enum": ["path", "line_start", "line_end", "quote"] }
+        },
+        "path_must_equal_source": { "type": "boolean" },
+        "line_must_exist": { "type": "boolean" },
+        "quote_must_match_line": { "type": "boolean" }
+      }
+    },
+    "negative_acceptance": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["name", "expect"],
+        "properties": {
+          "name": { "type": "string" },
+          "expect": { "type": "string", "enum": ["reject", "fail"] }
+        }
+      }
+    },
+    "failure_injection": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["nonzero_exit", "timeout", "missing_structured_result", "missing_artifact", "malformed_json"]
+      }
+    },
+    "pass_requires": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "failure_policy": { "type": "string", "minLength": 1 },
+    "review_categories": {
+      "type": "array",
+      "items": { "type": "string", "enum": ["已证实", "待验证", "分歧"] }
+    },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "dispatch_elapsed",
+          "expected_vs_received",
+          "failure_exposure",
+          "human_interruptions",
+          "decision_sufficiency_human_score",
+          "token_and_cost"
+        ]
+      }
+    },
+    "constraints": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "limits": {
+      "type": "array",
+      "items": { "type": "string" }
+    }
+  }
+}

@@ -1,0 +1,21 @@
+# Node
+node_modules/
+dist/
+lib/
+*.tsbuildinfo
+
+# dsh 本地数据
+.dsh/
+.dsh-hub/
+runs/
+
+# 环境与凭据
+.env
+.env.*
+!.env.example
+
+# 编辑器/系统
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
